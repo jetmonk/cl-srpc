@@ -1,4 +1,4 @@
-# Common Lisp Secure RPC - cl-srpc 
+# cl-srpc - Common Lisp Secure RPC 
 
 A hopefully secure SRPC package based on usocket (networking), ironclad (symmetrical encryption), and  cl-marshal (serializaton of lisp objects)
 
@@ -12,6 +12,8 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 ## USAGE
 
 
+### On server side
+
 ```
 (asdf:load-system "cl-srpc")
 
@@ -23,14 +25,14 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 (defparameter *server*
   (make-instance 'cl-srpc:server
     :cipher-args cl-srpc::*default-cipher* ;; or your own ironclad cipher
-    :address "127.0.0.1"  ;; 
+    :address "127.0.0.1"  
     :port 50000))
 
 (cl-sprc:start-server *server*)
+````
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; On client side, do
-
+###  On client side
+````
 (defparameter *client*
   (make-instance 'cl-srpc:client
     :cipher-args cl-srpc::*default-cipher*
@@ -87,7 +89,6 @@ on the server before being deleted by a cleanup thread. By
 default it is 1 day.
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ## Internals
 
@@ -100,34 +101,30 @@ Internals are documented, but are not of concern to most users.
 
     >CL-SRPC 1.0
 
-2a. CLIENT reads this, and exits on incompatible version.
+3. CLIENT reads this, and exits on incompatible version.
 
-3.  SERVER sends encrypted block with nothing but header
+4.  SERVER sends encrypted block (see below for definition) with nothing but header
+
     > REQUEST-ID: xxxxxxxxx
-    This request id will be returned by the client in its request
+    
+    This request id will be returned by the client in its request.
 
-3a. CLIENT reads this REQUEST-ID encrypted block.
+5. CLIENT reads this REQUEST-ID encrypted block.
    
-4a. CLIENT sends request in an encrypted block, preceded by
-    >CONTENT-LENGTH: NN
-
-    The encrypted block contains an internal
+6. CLIENT sends request in an encrypted block.   The encrypted block contains the
     (encrypted) REQUEST-ID header, to prevent replay attacks.
    
-4b. SERVER reads NN bytes as an encrypted block (see below)
+7. SERVER reads NN bytes as an encrypted block (see below)
     and decrypts encrypted block into a string, which is eval'ed
     (see below for encrypted blocks)
    
-5a. SERVER writes an encrypted block containing the evaluated
-    expression preceded by
-    > CONTENT-LENGTH: N2
-    The SERVER writes an encrypted block
+8. SERVER writes an encrypted block containing the evaluated expression
    
-5b. CLIENT reads encrypted block of length N2, and closes connection.
+9. CLIENT readst the encrypted block, and closes connection.
 
 
 
-### CONTENT OF ENCRYPTED BLOCKS =======
+### CONTENT OF ENCRYPTED BLOCKS 
 
 An encrypted block, upon decryption, consists of internal headers of the form
 "HEADER:  <value>\n" followed by a blank line, followed by <content-text>.
@@ -135,11 +132,15 @@ An encrypted block, upon decryption, consists of internal headers of the form
 Each encrypted block is preceded by plaintext external headers:
 
   >CONTENT-LENGTH: nn\n
+  
   >\n
 
 The encrypted block sent by the client has the header
+
   > COMMAND: <command>
-where <command> is
+  
+where <command> is one of
+
   1) EVAL - evaluate the cl-marshal encoded lisp in <content-text),
      and return  it as cl-marshal text
   2) EVAL-AND-CACHE - evaluate, but do so in another thread, but return
