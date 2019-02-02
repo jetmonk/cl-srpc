@@ -1,12 +1,13 @@
 # cl-srpc - Common Lisp Secure RPC 
 
-A hopefully secure SRPC package based on usocket (networking), ironclad (symmetrical encryption), and  cl-marshal (serializaton of lisp objects)
+An encrypted RPC (Remote Procedure Call) package that sends lisp expressions like
+`(+ 1 1)` from a client to a server for evaluation, either immediate or deferred.
 
 ## Dependencies
 
-* usocket
-* ironclad
-* cl-marshal
+* usocket  - for networking
+* ironclad  - for encryption
+* cl-marshal - for serialization of lisp objects
 
 
 ## USAGE
