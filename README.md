@@ -26,11 +26,6 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 ```
 (asdf:load-system "cl-srpc")
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; On server side, do
-
-
 (defparameter *server*
   (make-instance 'cl-srpc:server
     :cipher-args cl-srpc::*default-cipher* ;; or your own ironclad cipher
@@ -41,7 +36,9 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 ````
 
 ###  On client side
-
+````
+(asdf:load-system "cl-srpc")
+````
 
 #### Evaluate remotely and return immediately
 ````
