@@ -149,9 +149,9 @@ Each encrypted block is preceded by plaintext external headers:
 
 The encrypted block sent by the client has the header
 
-  > COMMAND: <command>
+  >COMMAND: [command]
   
-where <command> is one of
+where [command] is one of
 
   1) EVAL - evaluate the cl-marshal encoded lisp in <content-text),
      and return  it as cl-marshal text
