@@ -32,6 +32,9 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 ````
 
 ###  On client side
+
+
+#### Evaluate remotely and return immediately
 ````
 (defparameter *client*
   (make-instance 'cl-srpc:client
@@ -54,7 +57,10 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
   ==> (cl-srpc:cl-srpc-remote-error ;; special symbol indicating error
        type-error ;; the type of the error
        "The value  \"two\" is not of type number")
+````
 
+#### Evaluate remotely but return a promise of a result
+````
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; One can also use :RETURN-PROMISE to return immediately, but
 ;; create a REMOTE-PROMISE object that can be used to retrieve
