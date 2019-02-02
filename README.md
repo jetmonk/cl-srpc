@@ -40,7 +40,7 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 (asdf:load-system "cl-srpc")
 ````
 
-#### Evaluate remotely and return immediately
+#### On client side, evaluate remotely and return immediately
 ````
 (defparameter *client*
   (make-instance 'cl-srpc:client
@@ -65,7 +65,7 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
        "The value  \"two\" is not of type number")
 ````
 
-#### Evaluate remotely but return a promise of a result
+#### On client side, evaluate remotely but return a promise of a result
 ````
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; One can also use :RETURN-PROMISE to return immediately, but
