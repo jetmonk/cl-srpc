@@ -11,6 +11,15 @@ A hopefully secure SRPC package based on usocket (networking), ironclad (symmetr
 
 ## USAGE
 
+### Define a symmetrical key to use on both server and client
+
+````
+;; the key is the arguments given to (ironclad:make-cipher) and NIL
+;; means not to use any cipher, but send in cleartext
+
+(defparameter *default-cipher*
+  `(:blowfish :key ,(string-to-utf-8-bytes "Don't You Dare Use This Key") :mode :cbc))
+````
 
 ### On server side
 
