@@ -199,7 +199,7 @@ The ciphertext, when decrypted by ironclad, has the form
      length of messages.
   *  [hhh...] - the +HASH-ALGO+ hash of everything that follows.
   *  [TTT...] - the plaintext string, after it was converted to utf-8 byte array.
-  *  [pppp...] - some padding at end, so that the total length is a multiple the block
+  *  [pppp...] - some padding at end, so that the total length is a multiple of the block
      size, and so the length of the transmission is randomized.  This
      padding is stripped out during decryption.
 
