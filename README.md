@@ -29,13 +29,14 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 ```
 (asdf:load-system "cl-srpc")
 
+;; define a server object on an IP and a port
 (defparameter *server*
   (make-instance 'cl-srpc:server
     :cipher-args *my-cipher* 
     :address "127.0.0.1"  
     :port 50000))
 
-;; optionally, test our cipher the first time we use it, to see if works
+;; optionally, test our cipher the first time we use it
 (cl-srpc:test-cipher *server*)
 
 ;; and start the server
@@ -56,16 +57,17 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
     :remote-port 50000))         ;; same as server
 
 
-;; then call
-
+;; then evaluate 1+2
 (cl-srpc:execute-remote-call *client* :expression '(+ 1 2))
   ==> (3)  ;; values returned inside list
 
-
+;; next evaluate multiple values
 (Cl-srpc:execute-remote-call *client* :expression '(values 1 2 3))
-  ==> (1 2 3) ;; multiple values
+  ==> (1 2 3) ;; multiple values returned in a list
 
-;; or in the case of a remote error
+;; now evaluate an expression that throws an error.  Note that
+;; the special symbol cl-srpc:cl-srpc-remote-error indicates
+;; an error occurred.
 (cl-srpc:execute-remote-call *client* :expression '(/ 1 "two"))
   ==> (cl-srpc:cl-srpc-remote-error ;; special symbol indicating error
        type-error ;; the type of the error
