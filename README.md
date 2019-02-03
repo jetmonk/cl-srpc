@@ -29,7 +29,7 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 
 (defparameter *server*
   (make-instance 'cl-srpc:server
-    :cipher-args *my-cipher* ;; or your own ironclad cipher
+    :cipher-args *my-cipher* 
     :address "127.0.0.1"  
     :port 50000))
 
