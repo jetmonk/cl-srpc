@@ -20,6 +20,8 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 
 (defparameter *my-cipher*
   `(:blowfish :key ,(string-to-utf-8-bytes "Don't You Dare Use This Key") :mode :cbc))
+
+
 ````
 
 ### On server side
@@ -33,6 +35,10 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
     :address "127.0.0.1"  
     :port 50000))
 
+;; optionally, test our cipher the first time we use it, to see if works
+(cl-srpc:test-cipher *server*)
+
+;; and start the server
 (cl-sprc:start-server *server*)
 ````
 
