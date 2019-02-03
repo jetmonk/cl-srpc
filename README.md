@@ -10,9 +10,9 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 * cl-marshal - for serialization of lisp objects
 
 
-## USAGE
+## Usage
 
-### Define a symmetrical key to use on both server and client
+### Define a symmetric key to use on both server and client
 
 ````
 ;; the key is the arguments given to (ironclad:make-cipher) and NIL
@@ -56,7 +56,7 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
   ==> (3)  ;; values returned inside list
 
 
-(cl-srpc:execute-remote-call *client* :expression '(values 1 2 3))
+(Cl-srpc:execute-remote-call *client* :expression '(values 1 2 3))
   ==> (1 2 3) ;; multiple values
 
 ;; or in the case of a remote error
