@@ -18,7 +18,7 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 ;; the key is the arguments given to (ironclad:make-cipher) and NIL
 ;; means not to use any cipher, but send in cleartext
 
-(defparameter *default-cipher*
+(defparameter *my-cipher*
   `(:blowfish :key ,(string-to-utf-8-bytes "Don't You Dare Use This Key") :mode :cbc))
 ````
 
@@ -29,7 +29,7 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 
 (defparameter *server*
   (make-instance 'cl-srpc:server
-    :cipher-args cl-srpc::*default-cipher* ;; or your own ironclad cipher
+    :cipher-args *my-cipher* ;; or your own ironclad cipher
     :address "127.0.0.1"  
     :port 50000))
 
@@ -45,7 +45,7 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
 ````
 (defparameter *client*
   (make-instance 'cl-srpc:client
-    :cipher-args cl-srpc::*default-cipher*
+    :cipher-args *my-cipher*
     :remote-address "127.0.0.1"  ;; same as server
     :remote-port 50000))         ;; same as server
 
