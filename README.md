@@ -57,7 +57,7 @@ An encrypted RPC (Remote Procedure Call) package that sends lisp expressions lik
     :remote-port 50000))         ;; same as server
 
 
-;; then evaluate 1+2
+;; then evaluate 1+2, and return immediately
 (cl-srpc:execute-remote-call *client* :expression '(+ 1 2))
   ==> (3)  ;; values returned inside list
 
@@ -128,18 +128,20 @@ Internals are documented, but are not of concern to most users.
 
     > REQUEST-ID: xxxxxxxxx
     
-    This request id will be returned by the client in its request.
+    This request id will be returned by the client in its request, and will
+    be used as an identifier for deferred evaluations.
 
 5. CLIENT reads this REQUEST-ID encrypted block.
    
 6. CLIENT sends request in an encrypted block.   The encrypted block contains the
-    (encrypted) REQUEST-ID header, to prevent replay attacks.
+    (encrypted) REQUEST-ID header, to prevent replay attacks.  It also contains
+    a COMMAND header, and a serialized representation of expression to be
+    evaluated.
    
-7. SERVER reads NN bytes as an encrypted block (see below)
-    and decrypts encrypted block into a string, which is eval'ed
-    (see below for encrypted blocks)
+7. SERVER reads an encrypted block and decrypts the encrypted block
+    into a string, which is eval'ed.
    
-8. SERVER writes an encrypted block containing the evaluated expression
+8. SERVER writes an encrypted block containing the evaluated expression.
    
 9. CLIENT readst the encrypted block, and closes connection.
 
@@ -148,7 +150,7 @@ Internals are documented, but are not of concern to most users.
 ### CONTENT OF ENCRYPTED BLOCKS 
 
 An encrypted block, upon decryption, consists of internal headers of the form
-"HEADER:  <value>\n" followed by a blank line, followed by <content-text>.
+``HEADER:  [value\n`` followed by a blank line, followed by ``[content-text]``.
 
 Each encrypted block is preceded by plaintext external headers:
 
@@ -188,13 +190,16 @@ For a given ironclad cipher with a block size, the first BLOCK-SIZE
 elements are the IV (initialiation vector), and the remaining elements
 are ciphertext.
 
-The ciphertext, when decrypted by ironclad, has
-  *  one NPAD byte giving the length of the padding at the end; padding
-     is both to make the input a multiple of block size, and to randomize
-     length
-  *  the +HASH-ALGO+ hash of everything that follows
-  *  the plaintext string, after it was converted to utf-8 byte array
-  *  some padding at end, so that the total length is a multiple the block
+The ciphertext, when decrypted by ironclad, has the form
+
+   ``Nhhhhhhh...TTTT...ppp...``
+
+  *  [N] - one NPAD byte giving the length of the padding at the end; padding
+     is both to make the input a multiple of cipher block size, and to randomize
+     length of messages.
+  *  [hhh...] - the +HASH-ALGO+ hash of everything that follows.
+  *  [TTT...] - the plaintext string, after it was converted to utf-8 byte array.
+  *  [pppp...] - some padding at end, so that the total length is a multiple the block
      size, and so the length of the transmission is randomized.  This
      padding is stripped out during decryption.
 
